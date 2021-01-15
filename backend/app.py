@@ -1,7 +1,7 @@
 from database.db import initialize_db
-from database.models import Step, Trigger, User, Workflow
+from database.models import User
 from flask import Flask, Response, abort, json, request
-from services.workflow import execute_trigger
+from services.workflow import WorkflowService
 
 app = Flask(__name__)
 app.config['MONGODB_SETTINGS'] = {
@@ -41,18 +41,7 @@ def workflow():
     except Exception:
         abort(500, description='Error leyendo el archivo, por favor verifique el contenido e intente de nuevo.')
 
-    try:
-        trigger = Trigger(**data['trigger'])
-        workflow = Workflow(trigger=trigger).save()
-
-        for data_step in data['steps']:
-            step = Step(**data_step)
-            workflow.steps.append(step)
-            workflow.save()
-    except Exception:
-        abort(500, description='Error procesando el archivo, por favor intente de nuevo.')
-
-    execute_trigger(workflow=workflow)
+    WorkflowService(data=data)
     print('Se ha finalizado la ejecución del workflow correctamente.')
 
     return {'detalle': 'Se ha finalizado la ejecución del workflow correctamente.'}
