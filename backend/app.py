@@ -96,20 +96,21 @@ def execute_transitions(workflow, transitions):
                 if Execution.objects(**filters):
                     execute_step(workflow=workflow, target=transition['target'])
                     break
-
-                print('execution: ', execution.to_json())
-
-                workflow.executions.filter(**filters)
         else:
             execute_step(workflow=workflow, target=transition['target'])
 
 
 def get_param(workflow, param):
+    return_param = None
     print('workflow id: ', str(workflow.pk))
-    execution = Execution.objects(workflow=str(workflow.pk), name=param['from_id']).order_by('-id').first()
-    print('execution: ', execution.to_json())
+    if param['from_id']:
+        execution = Execution.objects(workflow=str(workflow.pk), name=param['from_id']).order_by('-id').first()
+        return_param = execution.result[param['param_id']]
+        print('execution: ', execution.to_json())
+    elif param['value']:
+        return_param = param['value']
 
-    return execution.result[param['param_id']]
+    return return_param
 
 
 app.run(debug=True, host='0.0.0.0')
