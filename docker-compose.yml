@@ -8,9 +8,9 @@ services:
     image: playvox-backend
     container_name: playvox-backend
     restart: "no"
-    command: python app.py
+    command: python api.py
     volumes:
-      - ./backend:/app
+      - ./backend:/api
     ports:
       - "5000:5000"
     depends_on:

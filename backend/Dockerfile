@@ -8,12 +8,12 @@ ENV PYTHONUNBUFFERED=1
 ENV PYTHONIOENCODING=utf-8
 
 FROM build-env
-WORKDIR /app
-COPY requirements.txt /app/
+WORKDIR /api
+COPY requirements.txt /api/
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . /app/
+COPY . /api/
 EXPOSE 5000
 EXPOSE 27017
 EXPOSE 28017
