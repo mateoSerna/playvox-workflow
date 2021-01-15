@@ -17,6 +17,8 @@ class BankService:
             getattr(self, action)(**params)
         except AttributeError:
             abort(405, description=f'Metodo {action} no soportado.')
+        except Exception:
+            abort(500, description=f'Error ejecutando método o método no soportado {action}.')
 
     def validate_account(self, step, user_id, pin):
         """Valída que la cuenta del usuario solicitado sea válida."""
@@ -37,7 +39,7 @@ class BankService:
 
         Execution(
             workflow=str(self.workflow.pk),
-            name=step['id'],
+            name='account_balance',
             type=Execution.TYPE_STEP,
             result={'balance': float(user.balance)}
         ).save()
@@ -49,8 +51,14 @@ class BankService:
 
     def withdraw(self, step, user_id, money):
         """Realiza un retiro de dinero de la cuenta del usuario solicitado."""
-        User.objects(user_id=user_id).update_one(inc__balance=money * -1)
-        print('Cantidad retirada: ', money)
+        user = User.objects(user_id=user_id).first()
+
+        if user.balance >= money:
+            print('Cantidad retirada: ', money)
+            user.balance = float(user.balance) - float(money)
+            user.save()
+        else:
+            print('Imposible realizar retiro: Fondos insuficientes.')
 
     def withdraw_in_dollars(self, step, user_id, money):
         """Realiza un retiro de dinero en dólares de la cuenta del usuario solicitado.
@@ -58,8 +66,14 @@ class BankService:
         """
         rate_params = {'vigenciadesde': datetime.date.today().isoformat()}
         rate = requests.get('https://www.datos.gov.co/resource/32sa-8pi3.json', params=rate_params)
-        usd_rate = rate.json()[0]
+        usd_rate = float(rate.json()[0]['valor'])
 
-        print('Tasa de cambio: ', float(usd_rate['valor']))
-        User.objects(user_id=user_id).update_one(inc__balance=float(usd_rate['valor']) * money * -1)
-        print('Cantidad retirada: ', float(usd_rate['valor']) * money)
+        print('Tasa de cambio: ', usd_rate)
+        user = User.objects(user_id=user_id).first()
+
+        if user.balance >= (usd_rate * money):
+            print('Cantidad retirada: ', usd_rate * money)
+            user.balance = float(user.balance) - (usd_rate * money)
+            user.save()
+        else:
+            print('Imposible realizar retiro: Fondos insuficientes.')

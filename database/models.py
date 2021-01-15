@@ -41,7 +41,3 @@ class Execution(db.Document):
     name = db.StringField(required=True)
     type = db.StringField(choices=TYPES, required=True)
     result = db.DictField(required=True)
-
-    @queryset_manager
-    def latest(doc_cls, queryset):
-        return queryset.order_by('-id').first()
