@@ -1,7 +1,8 @@
-from database.models import User
 from flask import Response, abort, json, request
 from flask_restful import Resource
 from mongoengine.errors import NotUniqueError
+
+from database.models import User
 from services.workflow import WorkflowService
 
 

@@ -1,8 +1,9 @@
 import datetime
 
 import requests
-from database.models import Execution, User
 from flask import abort
+
+from database.models import Execution, User
 
 
 class BankService:

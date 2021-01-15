@@ -1,31 +1,38 @@
-from database.models import Execution, Step, Trigger, Workflow
+from functools import wraps
+
 from flask import abort
+
+from database.models import Execution, Step, Trigger, Workflow
 from services.bank import BankService
 
 
 class WorkflowService:
     def __init__(self, data):
         """Inicializa la instancia del servicio Workflow."""
-        self.workflow = self.create_workflow(data=data)
-        self.bank = BankService(workflow=self.workflow)
+        self.execute_trigger(data=data)
 
-        self.execute_trigger()
+    def _workflow(function):
+        """Inicia el workflow almacenando la información de su ejecución."""
+        @wraps(function)
+        def wrapper(self, data):
+            try:
+                trigger = Trigger(**data['trigger'])
+                workflow = Workflow(trigger=trigger).save()
 
-    def create_workflow(self, data):
-        """Inicia el workflow automatizado."""
-        try:
-            trigger = Trigger(**data['trigger'])
-            workflow = Workflow(trigger=trigger).save()
+                for data_step in data['steps']:
+                    step = Step(**data_step)
+                    workflow.steps.append(step)
+                    workflow.save()
+            except Exception:
+                abort(500, description='Error procesando el archivo, por favor intente de nuevo.')
 
-            for data_step in data['steps']:
-                step = Step(**data_step)
-                workflow.steps.append(step)
-                workflow.save()
-        except Exception:
-            abort(500, description='Error procesando el archivo, por favor intente de nuevo.')
+            self.workflow = workflow
+            self.bank = BankService(workflow=self.workflow)
 
-        return workflow
+            return function(self)
+        return wrapper
 
+    @_workflow
     def execute_trigger(self):
         """Realiza la ejecución del trigger del workflow."""
         print('Inicia ejecución del Trigger...')

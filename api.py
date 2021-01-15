@@ -1,6 +1,7 @@
-from database.db import initialize_db
 from flask import Flask
 from flask_restful import Api
+
+from database.db import initialize_db
 from resources import UsersResource, WorkflowResource
 
 app = Flask(__name__)
