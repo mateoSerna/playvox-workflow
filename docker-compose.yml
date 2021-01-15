@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      dockerfile: Dockerfile
+      context: backend/
+    image: playvox-backend
+    container_name: playvox-backend
+    restart: "no"
+    command: python app.py
+    volumes:
+      - ./backend:/app
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongodb
+  mongodb:
+    image: mongo
+    container_name: playvox-database
+    restart: "no"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: playvox
+      MONGO_INITDB_ROOT_PASSWORD: playvox
+      MONGO_INITDB_DATABASE: playvox
+    volumes:
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    ports:
+      - "27017:27017"
