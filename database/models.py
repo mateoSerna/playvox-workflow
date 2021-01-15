@@ -1,5 +1,3 @@
-from mongoengine.queryset import queryset_manager
-
 from .db import db
 
 

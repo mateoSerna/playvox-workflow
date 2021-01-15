@@ -46,19 +46,25 @@ class BankService:
 
     def deposit_money(self, step, user_id, money):
         """Realiza un depósito de dinero en la cuenta del usuario solicitado."""
-        User.objects(user_id=user_id).update_one(inc__balance=money)
-        print('Cantidad depositada: ', money)
+        if money >= 0:
+            print('Cantidad depositada: ', money)
+            User.objects(user_id=user_id).update_one(inc__balance=money)
+        else:
+            print('No es posible depositar valores negativos.')
 
     def withdraw(self, step, user_id, money):
         """Realiza un retiro de dinero de la cuenta del usuario solicitado."""
         user = User.objects(user_id=user_id).first()
 
-        if user.balance >= money:
-            print('Cantidad retirada: ', money)
-            user.balance = float(user.balance) - float(money)
-            user.save()
+        if money > 0:
+            if user.balance >= money:
+                print('Cantidad retirada: ', money)
+                user.balance = float(user.balance) - float(money)
+                user.save()
+            else:
+                print('No hay fondos suficientes para realizar el retiro.')
         else:
-            print('Imposible realizar retiro: Fondos insuficientes.')
+            print('No es posible retirar valores negativos.')
 
     def withdraw_in_dollars(self, step, user_id, money):
         """Realiza un retiro de dinero en dólares de la cuenta del usuario solicitado.
@@ -71,9 +77,12 @@ class BankService:
         print('Tasa de cambio: ', usd_rate)
         user = User.objects(user_id=user_id).first()
 
-        if user.balance >= (usd_rate * money):
-            print('Cantidad retirada: ', usd_rate * money)
-            user.balance = float(user.balance) - (usd_rate * money)
-            user.save()
+        if money > 0:
+            if user.balance >= (usd_rate * money):
+                print('Cantidad retirada: ', usd_rate * money)
+                user.balance = float(user.balance) - (usd_rate * money)
+                user.save()
+            else:
+                print('No hay fondos suficientes para realizar el retiro.')
         else:
-            print('Imposible realizar retiro: Fondos insuficientes.')
+            print('No es posible retirar valores negativos.')
