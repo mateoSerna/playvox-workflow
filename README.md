@@ -29,8 +29,15 @@ Sending the body in Multipart form: {"workflow": <workflow.json>}
 ```
 
 To connect to the database:
+```bash
 * User: playvox
 * DB: playvox
 * Password: playvox
 * Host: 127.0.0.1
 * Port: 27017
+```
+
+To execute the tests:
+```bash
+$ python -m unittest
+```
