@@ -11,14 +11,14 @@ app.config['MONGODB_SETTINGS'] = {
 initialize_db(app)
 
 
-@app.route('/users')
+@app.route('/users/')
 def get_users():
     """Retorna los usuarios creados en el sistema."""
     users = User.objects().to_json()
     return Response(users, mimetype="application/json", status=200)
 
 
-@app.route('/users', methods=['POST'])
+@app.route('/users/', methods=['POST'])
 def save_user():
     """Guarda un usuario nuevo en el sistema"""
     body = request.get_json()
@@ -26,7 +26,7 @@ def save_user():
     return {'id': str(user.id)}, 200
 
 
-@app.route('/workflow', methods=['POST'])
+@app.route('/workflow/', methods=['POST'])
 def workflow():
     """Inicia el proceso automatizado del workflow.
     Recibe un archivo JSON que debe cumplir con una estructura definida.
