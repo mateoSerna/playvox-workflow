@@ -4,13 +4,13 @@ services:
   backend:
     build:
       dockerfile: Dockerfile
-      context: backend/
+      context: .
     image: playvox-backend
     container_name: playvox-backend
     restart: "no"
     command: python api.py
     volumes:
-      - ./backend:/api
+      - ./:/api
     ports:
       - "5000:5000"
     depends_on:
