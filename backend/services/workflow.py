@@ -24,12 +24,12 @@ def execute_trigger(workflow):
 
 def execute_transitions(workflow, transitions):
     """Ejecuta cada transicion hacia un paso verificando que las condiciones de la transicion se cumplan."""
+    target = None
     for transition in transitions:
         print(f'Inicia ejecución de la transicion hacia el paso {transition["target"]}')
 
         if transition['condition']:
             for condition in transition['condition']:
-                target = None
                 print('Validando condicion de la transicion:')
 
                 try:
@@ -47,11 +47,14 @@ def execute_transitions(workflow, transitions):
                 if Execution.objects(**filters):
                     target = transition['target']
                     break
-            
             if target:
-                execute_step(workflow=workflow, target=transition['target'])
+                break
         else:
-            execute_step(workflow=workflow, target=transition['target'])
+            target = transition['target']
+            break
+
+    if target:
+        execute_step(workflow=workflow, target=transition['target'])
 
 
 def execute_step(workflow, target):

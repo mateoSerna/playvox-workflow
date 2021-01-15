@@ -39,7 +39,7 @@ def workflow():
         workflow_file = request.files[filename].read()
         data = json.loads(workflow_file.decode('utf8').replace("'", '"'))
     except Exception:
-        abort(500, description='Error leyendo el archivo, por favor intente de nuevo.')
+        abort(500, description='Error leyendo el archivo, por favor verifique el contenido e intente de nuevo.')
 
     try:
         trigger = Trigger(**data['trigger'])
