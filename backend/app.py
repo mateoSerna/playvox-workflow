@@ -1,9 +1,7 @@
-import bank
-
-from flask import Flask, json, request, Response
 from database.db import initialize_db
-from database.models import Execution, User, Workflow, Step, Trigger
-
+from database.models import Execution, Step, Trigger, User, Workflow
+from flask import Flask, Response, json, request
+from services import bank
 
 app = Flask(__name__)
 app.config['MONGODB_SETTINGS'] = {

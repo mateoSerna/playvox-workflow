@@ -1,5 +1,6 @@
-from .db import db
 from mongoengine.queryset import queryset_manager
+
+from .db import db
 
 
 class User(db.Document):
@@ -24,7 +25,6 @@ class Trigger(db.EmbeddedDocument):
 class Workflow(db.Document):
     steps = db.EmbeddedDocumentListField(Step)
     trigger = db.EmbeddedDocumentField(Trigger, required=True)
-    # executions = db.ListField(db.ReferenceField(Execution))
 
 
 class Execution(db.Document):
