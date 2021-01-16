@@ -18,7 +18,7 @@ class BankService:
         except AttributeError:
             abort(405, description=f'Metodo {action} no soportado.')
         except Exception:
-            abort(500, description=f'Error ejecutando método o método no soportado {action}.')
+            abort(500, description=f'Error ejecutando método {action}.')
 
     def validate_account(self, step, user_id, pin):
         """Valída que la cuenta del usuario solicitado sea válida."""
@@ -32,7 +32,7 @@ class BankService:
             result={'is_valid': is_valid}
         ).save()
 
-    def get_account_balance(self, step, user_id):
+    def get_account_balance(self, user_id, **kwargs):
         """Calcula el saldo actual del usaurio solicitado."""
         user = User.objects(user_id=user_id).first()
         print('Saldo actual del usuario: ', float(user.balance))
@@ -44,7 +44,7 @@ class BankService:
             result={'balance': float(user.balance)}
         ).save()
 
-    def deposit_money(self, step, user_id, money):
+    def deposit_money(self, user_id, money, **kwargs):
         """Realiza un depósito de dinero en la cuenta del usuario solicitado."""
         if money >= 0:
             print('Cantidad depositada: ', money)
@@ -52,7 +52,7 @@ class BankService:
         else:
             print('No es posible depositar valores negativos.')
 
-    def withdraw(self, step, user_id, money):
+    def withdraw(self, user_id, money, **kwargs):
         """Realiza un retiro de dinero de la cuenta del usuario solicitado."""
         user = User.objects(user_id=user_id).first()
 
@@ -66,7 +66,7 @@ class BankService:
         else:
             print('No es posible retirar valores negativos.')
 
-    def withdraw_in_dollars(self, step, user_id, money):
+    def withdraw_in_dollars(self, user_id, money, **kwargs):
         """Realiza un retiro de dinero en dólares de la cuenta del usuario solicitado.
         Se consulta el endpoint de la entidad financiera para obtener la tasa de cambio actual.
         """

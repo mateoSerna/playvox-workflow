@@ -26,7 +26,7 @@ class WorkflowResource(Resource):
         WorkflowService(data=data)
         print('Se ha finalizado la ejecución del workflow correctamente.')
 
-        return {'detail': 'Se ha finalizado la ejecución del workflow correctamente.'}
+        return {'message': 'Se ha finalizado la ejecución del workflow correctamente.'}
 
 
 class UsersResource(Resource):
@@ -45,10 +45,10 @@ class UsersResource(Resource):
             body = request.get_json()
             user = User(**body).save()
 
-            response = {'detail': str(user.user_id), 'code': 200}
+            response = {'message': str(user.user_id), 'code': 200}
         except NotUniqueError:
-            response = {'detail': 'Este usuario ya exíste.', 'code': 400}
+            response = {'message': 'Este usuario ya exíste.', 'code': 400}
         except Exception:
-            response = {'detail': 'No fue posible crear el usuario. Intente nuevamente.', 'code': 500}
+            response = {'message': 'No fue posible crear el usuario. Intente nuevamente.', 'code': 500}
 
-        return {'detail': response['detail']}, response['code']
+        return {'message': response['message']}, response['code']
